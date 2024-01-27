@@ -22,6 +22,7 @@ namespace DataTransferBetweenControllersinASPNETCoreMVC.Controllers
         // GET: Teachers
         public async Task<IActionResult> Index()
         {
+            // Recieve the Student Object data and then keep the data
             var studentData = TempData["student"];
             TempData.Keep();
             return View(await _context.Teachers.ToListAsync());

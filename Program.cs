@@ -27,9 +27,21 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    endpoints.MapControllerRoute(
+                    name: "Teacher",
+                    pattern: "Teacher/{controller=Teacher}/{action=Index}/{id?}");
+
+    endpoints.MapControllerRoute(
+                    name: "Student",
+                    pattern: "Student/{controller=Student}/{action=Index}/{id?}");
+
+});
 
 app.MapRazorPages();
 
