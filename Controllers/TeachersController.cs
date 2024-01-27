@@ -10,22 +10,24 @@ using DataTransferBetweenControllersinASPNETCoreMVC.Models;
 
 namespace DataTransferBetweenControllersinASPNETCoreMVC.Controllers
 {
-    public class StudentsController : Controller
+    public class TeachersController : Controller
     {
         private readonly AppDbContext _context;
 
-        public StudentsController(AppDbContext context)
+        public TeachersController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: Students
+        // GET: Teachers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Students.ToListAsync());
+            var studentData = TempData["student"];
+            TempData.Keep();
+            return View(await _context.Teachers.ToListAsync());
         }
 
-        // GET: Students/Details/5
+        // GET: Teachers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,41 +35,39 @@ namespace DataTransferBetweenControllersinASPNETCoreMVC.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students
+            var teacher = await _context.Teachers
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (student == null)
+            if (teacher == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            return View(teacher);
         }
 
-        // GET: Students/Create
+        // GET: Teachers/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Students/Create
+        // POST: Teachers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Student student)
+        public async Task<IActionResult> Create([Bind("Id,Name,Course,Department")] Teacher teacher)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(student);
+                _context.Add(teacher);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            // Transfer the Complete Student Object to Teacher
-            TempData["student"] = student;
-            return RedirectToAction("Index","Teacher");
+            return View(teacher);
         }
 
-        // GET: Students/Edit/5
+        // GET: Teachers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +75,22 @@ namespace DataTransferBetweenControllersinASPNETCoreMVC.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students.FindAsync(id);
-            if (student == null)
+            var teacher = await _context.Teachers.FindAsync(id);
+            if (teacher == null)
             {
                 return NotFound();
             }
-            return View(student);
+            return View(teacher);
         }
 
-        // POST: Students/Edit/5
+        // POST: Teachers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,RollNo,Section,Program")] Student student)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Course,Department")] Teacher teacher)
         {
-            if (id != student.Id)
+            if (id != teacher.Id)
             {
                 return NotFound();
             }
@@ -99,12 +99,12 @@ namespace DataTransferBetweenControllersinASPNETCoreMVC.Controllers
             {
                 try
                 {
-                    _context.Update(student);
+                    _context.Update(teacher);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(student.Id))
+                    if (!TeacherExists(teacher.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +115,10 @@ namespace DataTransferBetweenControllersinASPNETCoreMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return View(teacher);
         }
 
-        // GET: Students/Delete/5
+        // GET: Teachers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +126,34 @@ namespace DataTransferBetweenControllersinASPNETCoreMVC.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students
+            var teacher = await _context.Teachers
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (student == null)
+            if (teacher == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            return View(teacher);
         }
 
-        // POST: Students/Delete/5
+        // POST: Teachers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var student = await _context.Students.FindAsync(id);
-            if (student != null)
+            var teacher = await _context.Teachers.FindAsync(id);
+            if (teacher != null)
             {
-                _context.Students.Remove(student);
+                _context.Teachers.Remove(teacher);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StudentExists(int id)
+        private bool TeacherExists(int id)
         {
-            return _context.Students.Any(e => e.Id == id);
+            return _context.Teachers.Any(e => e.Id == id);
         }
     }
 }
